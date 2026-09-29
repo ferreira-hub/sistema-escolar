@@ -1,0 +1,183 @@
+* {
+    box-sizing: border-box;
+}
+
+.frequencia-page {
+    min-height: 100vh;
+    padding: 30px;
+    background: #f4f6f8;
+    font-family: Arial, sans-serif;
+}
+
+.frequencia-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.frequencia-container h1 {
+    margin-bottom: 5px;
+}
+
+.subtitulo,
+.explicacao {
+    color: #666;
+}
+
+.frequencia-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 25px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-weight: bold;
+}
+
+input,
+select,
+button {
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    padding: 0 12px;
+    font-size: 15px;
+}
+
+button {
+    background: #222;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    padding: 0 20px;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+.mensagem {
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.sucesso {
+    background: #e6f7e9;
+    color: #176b2c;
+}
+
+.erro {
+    background: #fde8e8;
+    color: #a11;
+}
+
+.resumo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0 35px;
+}
+
+.resumo div {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.resumo strong {
+    font-size: 28px;
+}
+
+.resumo span {
+    color: #666;
+}
+
+.filtro {
+    width: 300px;
+    margin-bottom: 15px;
+}
+
+.tabela-box {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 35px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f1f1f1;
+}
+
+.presente {
+    color: #16852e;
+    font-weight: bold;
+}
+
+.falta {
+    color: #c62828;
+    font-weight: bold;
+}
+
+.cards-risco {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.card-frequencia {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 5px solid #777;
+}
+
+.card-frequencia.risco {
+    border-left: 5px solid #d32f2f;
+}
+
+.card-frequencia span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+@media (max-width: 800px) {
+    .frequencia-form {
+        grid-template-columns: 1fr;
+    }
+
+    .resumo {
+        grid-template-columns: 1fr;
+    }
+
+    .filtro {
+        width: 100%;
+    }
+}

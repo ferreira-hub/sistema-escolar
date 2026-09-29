@@ -1,0 +1,15 @@
+import express from 'express';
+import alunosRoutes from './alunos/routes.js';
+import frequenciasRoutes from './frequencias/routes.js';
+import turmasRoutes from './turmas/routes.js';
+import authRoutes from './auth/routes.js';
+import chamadaRoutes from './chamada/routes.js';
+import professoresRoutes from './professores/routes.js';
+const routes = express.Router();
+routes.use(alunosRoutes);
+routes.use(frequenciasRoutes);
+routes.use(turmasRoutes);
+routes.use(authRoutes);
+routes.use(chamadaRoutes);
+routes.use(professoresRoutes);
+export default routes;

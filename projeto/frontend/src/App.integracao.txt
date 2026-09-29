@@ -1,0 +1,1 @@
+A integração já foi feita neste pacote. O App.jsx já importa Frequencia e exibe o módulo pelo botão Frequência.

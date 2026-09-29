@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Escolar · Módulo Notas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background: #f4f7fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    #root {
+      max-width: 1000px;
+      width: 100%;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25);
+      padding: 2rem 2rem 2.5rem;
+      transition: all 0.2s;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #0b2b3f;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.8rem;
+      border-bottom: 2px solid #e6edf4;
+      padding-bottom: 0.8rem;
+    }
+    h1 i {
+      color: #2a7de1;
+      font-size: 1.6rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 1rem 1.2rem;
+      background: #f9fbfd;
+      padding: 1.5rem 1.5rem 1.2rem;
+      border-radius: 1.4rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e2eaf2;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #3e5a70;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .form-group label i {
+      font-size: 0.8rem;
+      color: #4c7aa5;
+      width: 1rem;
+    }
+    .form-group input, .form-group select {
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #d4dfe9;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: white;
+      transition: 0.15s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.15);
+    }
+    .btn-save {
+      background: #1a6bc4;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.65rem 1.8rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(26, 107, 196, 0.2);
+      border: 1px solid #1960b0;
+      letter-spacing: 0.3px;
+      margin-top: 0.2rem;
+      height: 46px;
+    }
+    .btn-save:hover {
+      background: #135aac;
+      transform: scale(0.97);
+      box-shadow: 0 6px 12px rgba(26, 107, 196, 0.25);
+    }
+    .btn-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-save i {
+      font-size: 1rem;
+    }
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .section-title h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1c3b54;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title h2 i {
+      color: #2a7de1;
+    }
+    .badge-count {
+      background: #e3ecf5;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1f4a6b;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid #e2eaf2;
+      background: #fafcfe;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #eef4fa;
+      color: #1f3d57;
+      font-weight: 600;
+      padding: 0.9rem 0.8rem;
+      text-align: left;
+      border-bottom: 2px solid #d7e2ee;
+    }
+    td {
+      padding: 0.8rem 0.8rem;
+      border-bottom: 1px solid #e6edf5;
+      color: #1d384e;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .empty-row td {
+      padding: 2.2rem 0.8rem;
+      text-align: center;
+      color: #7b97ae;
+      font-style: italic;
+      background: #f8fafc;
+    }
+    .grade-high {
+      font-weight: 600;
+      color: #0f7b3a;
+    }
+    .grade-medium {
+      font-weight: 600;
+      color: #b16f1a;
+    }
+    .grade-low {
+      font-weight: 600;
+      color: #b13a3a;
+    }
+    .student-performance {
+      margin-top: 1.8rem;
+      background: #f0f6fe;
+      padding: 1.2rem 1.8rem;
+      border-radius: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border-left: 5px solid #2a7de1;
+    }
+    .performance-label {
+      font-weight: 500;
+      color: #1c405e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .performance-label i {
+      color: #2a7de1;
+    }
+    .performance-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem 2.2rem;
+      align-items: center;
+    }
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .stat-item strong {
+      font-weight: 600;
+      color: #0e2b40;
+    }
+    .stat-value {
+      background: white;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #124072;
+      border: 1px solid #cbddee;
+    }
+    .btn-clear {
+      background: transparent;
+      border: 1px solid #ccdcec;
+      color: #3c5f7c;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.1s;
+      font-weight: 500;
+    }
+    .btn-clear:hover {
+      background: #e1eaf3;
+      border-color: #a0bbd4;
+    }
+    .btn-clear:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .flex-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1f3d57;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      max-width: 400px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.error {
+      background: #b13a3a;
+    }
+    .toast.success {
+      background: #0f7b3a;
+    }
+    @media (max-width: 640px) {
+      #root { padding: 1.2rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="root">
+  <h1><i class="fas fa-graduation-cap"></i> Lançamento de Notas</h1>
+
+  <!-- Formulário de cadastro -->
+  <div class="form-grid" id="gradeForm">
+    <div class="form-group">
+      <label><i class="fas fa-user"></i> Aluno</label>
+      <select id="studentSelect">
+        <option value="João">João</option>
+        <option value="Maria">Maria</option>
+        <option value="Carlos">Carlos</option>
+        <option value="Ana">Ana</option>
+        <option value="Lucas">Lucas</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-book-open"></i> Disciplina</label>
+      <select id="subjectSelect">
+        <option value="Front-End">Front-End</option>
+        <option value="Back-End">Back-End</option>
+        <option value="Banco de Dados">Banco de Dados</option>
+        <option value="QA">QA</option>
+        <option value="UX/UI">UX/UI</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-calendar-alt"></i> Bimestre</label>
+      <select id="bimestreSelect">
+        <option value="1º Bimestre">1º Bimestre</option>
+        <option value="2º Bimestre">2º Bimestre</option>
+        <option value="3º Bimestre">3º Bimestre</option>
+        <option value="4º Bimestre">4º Bimestre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-star"></i> Nota</label>
+      <input type="number" id="gradeInput" placeholder="0.0 - 10.0" min="0" max="10" step="0.1" value="8.5">
+    </div>
+    <div class="form-group" style="justify-content: flex-end;">
+      <button class="btn-save" id="saveGradeBtn"><i class="fas fa-save"></i> Salvar</button>
+    </div>
+  </div>
+
+  <!-- Lista de notas -->
+  <div class="section-title">
+    <h2><i class="fas fa-list-ul"></i> Notas cadastradas</h2>
+    <span class="badge-count" id="gradeCount">0</span>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Aluno</th>
+          <th>Disciplina</th>
+          <th>Bimestre</th>
+          <th>Nota</th>
+        </tr>
+      </thead>
+      <tbody id="gradeTableBody">
+        <tr class="empty-row"><td colspan="5">Carregando notas...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Desempenho / consulta -->
+  <div class="student-performance">
+    <div class="performance-label">
+      <i class="fas fa-chart-line"></i> <span>Desempenho do aluno</span>
+    </div>
+    <div class="performance-stats" id="performanceStats">
+      <div class="stat-item"><strong>Aluno:</strong> <span class="stat-value" id="perfStudent">—</span></div>
+      <div class="stat-item"><strong>Média:</strong> <span class="stat-value" id="perfAverage">—</span></div>
+      <div class="stat-item"><strong>Total:</strong> <span class="stat-value" id="perfTotal">0</span></div>
+      <div class="flex-actions">
+        <button class="btn-clear" id="clearGradesBtn"><i class="fas fa-trash-alt"></i> Limpar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
+
+<script>
+  (function() {
+    // ============================================================
+    // CONFIGURAÇÃO DO BACKEND - ALTERE A URL PARA O SEU SERVIDOR
+    // ============================================================
+    const API_BASE_URL = 'http://localhost:3000/api'; // <-- ALTERE AQUI
+    // Se estiver usando outro endpoint, ajuste a URL acima.
+
+    // ============================================================
+    // FUNÇÕES DE COMUNICAÇÃO COM O BACKEND (CRUD)
+    // ============================================================
+
+    // Buscar todas as notas
+    async function fetchGrades() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/notas`);
+        if (!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        return await response.json();
+      } catch (error) {
+        console.error('Erro ao buscar notas:', error);
+        showToast('Erro ao carregar notas do servidor.', 'error');
+        return [];
+      }
+    }
+
+    // Criar uma nova nota
+    async function createGrade(gradeData) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/notas`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(gradeData),
+        });
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || `Erro ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Erro ao criar nota:', error);
+        showToast(`Erro ao salvar: ${error.message}`, 'error');
+        throw error;
+      }
+    }
+
+    // Deletar todas as notas (limpeza em massa)
+    async function deleteAllGrades() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/notas`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        return await response.json();
+      } catch (error) {
+        console.error('Erro ao limpar notas:', error);
+        showToast('Erro ao limpar notas.', 'error');
+        throw error;
+      }
+    }
+
+    // ============================================================
+    // ESTADO DA APLICAÇÃO
+    // ============================================================
+    let grades = []; // array de notas carregadas do backend
+
+    // Referências DOM
+    const studentSelect = document.getElementById('studentSelect');
+    const subjectSelect = document.getElementById('subjectSelect');
+    const bimestreSelect = document.getElementById('bimestreSelect');
+    const gradeInput = document.getElementById('gradeInput');
+    const saveBtn = document.getElementById('saveGradeBtn');
+    const tbody = document.getElementById('gradeTableBody');
+    const gradeCountSpan = document.getElementById('gradeCount');
+    const perfStudent = document.getElementById('perfStudent');
+    const perfAverage = document.getElementById('perfAverage');
+    const perfTotal = document.getElementById('perfTotal');
+    const clearBtn = document.getElementById('clearGradesBtn');
+    const toast = document.getElementById('toast');
+
+    // ============================================================
+    // FUNÇÕES AUXILIARES
+    // ============================================================
+    let toastTimeout = null;
+
+    function showToast(message, type = 'info') {
+      toast.textContent = message;
+      toast.className = 'toast';
+      if (type === 'error') toast.classList.add('error');
+      else if (type === 'success') toast.classList.add('success');
+      toast.classList.add('show');
+      
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
+    function setLoading(isLoading) {
+      saveBtn.disabled = isLoading;
+      if (isLoading) {
+        saveBtn.innerHTML = '<span class="loading-spinner"></span> Salvando...';
+      } else {
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar';
+      }
+    }
+
+    // ============================================================
+    // RENDERIZAÇÃO DA UI
+    // ============================================================
+    function renderUI() {
+      // 1. Renderizar tabela
+      if (!grades || grades.length === 0) {
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Nenhuma nota cadastrada.</td></tr>`;
+      } else {
+        let html = '';
+        grades.forEach((g) => {
+          const notaNum = parseFloat(g.nota);
+          let gradeClass = '';
+          if (notaNum >= 7) gradeClass = 'grade-high';
+          else if (notaNum >= 5) gradeClass = 'grade-medium';
+          else gradeClass = 'grade-low';
+          
+          const id = g.id || g._id || '—';
+          html += `<tr>
+            <td><small>${id}</small></td>
+            <td><strong>${g.aluno}</strong></td>
+            <td>${g.disciplina}</td>
+            <td>${g.bimestre}</td>
+            <td class="${gradeClass}">${g.nota}</td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+      }
+
+      // 2. Atualizar contador
+      gradeCountSpan.textContent = grades.length;
+
+      // 3. Atualizar desempenho (aluno selecionado)
+      const selectedStudent = studentSelect.value;
+      const studentGrades = grades.filter(g => g.aluno === selectedStudent);
+      const total = studentGrades.length;
+      perfTotal.textContent = total;
+
+      if (total === 0) {
+        perfStudent.textContent = '—';
+        perfAverage.textContent = '—';
+      } else {
+        perfStudent.textContent = selectedStudent;
+        const sum = studentGrades.reduce((acc, cur) => acc + parseFloat(cur.nota), 0);
+        const avg = (sum / total).toFixed(1);
+        perfAverage.textContent = avg;
+      }
+    }
+
+    // ============================================================
+    // CARREGAR DADOS DO BACKEND
+    // ============================================================
+    async function loadGrades() {
+      try {
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>`;
+        grades = await fetchGrades();
+        renderUI();
+      } catch (error) {
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="5">❌ Erro ao carregar dados.</td></tr>`;
+      }
+    }
+
+    // ============================================================
+    // SALVAR NOTA (INTEGRAÇÃO COM BACKEND)
+    // ============================================================
+    async function handleSaveGrade() {
+      // Capturar valores
+      const aluno = studentSelect.value.trim();
+      const disciplina = subjectSelect.value.trim();
+      const bimestre = bimestreSelect.value.trim();
+      const notaRaw = gradeInput.value.trim();
+
+      // Validações
+      if (!aluno) { showToast('❌ Aluno é obrigatório.', 'error'); return; }
+      if (!disciplina) { showToast('❌ Disciplina é obrigatória.', 'error'); return; }
+      if (!bimestre) { showToast('❌ Bimestre é obrigatório.', 'error'); return; }
+      if (notaRaw === '') { showToast('❌ Nota é obrigatória.', 'error'); return; }
+
+      const notaNum = parseFloat(notaRaw);
+      if (isNaN(notaNum) || notaNum < 0 || notaNum > 10) {
+        showToast('❌ Nota inválida. Digite um número entre 0 e 10.', 'error');
+        return;
+      }
+
+      const notaFormatada = notaNum.toFixed(1);
+
+      // Preparar dados para envio
+      const gradeData = {
+        aluno: aluno,
+        disciplina: disciplina,
+        bimestre: bimestre,
+        nota: notaFormatada
+      };
+
+      setLoading(true);
+      try {
+        const created = await createGrade(gradeData);
+        // Recarregar a lista do backend para garantir consistência
+        await loadGrades();
+        showToast(`✅ Nota de ${aluno} cadastrada com sucesso!`, 'success');
+        gradeInput.value = '';
+      } catch (error) {
+        // Erro já tratado no createGrade com toast
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // ============================================================
+    // LIMPAR TODAS AS NOTAS
+    // ============================================================
+    async function handleClearAll() {
+      if (grades.length === 0) {
+        showToast('✅ Nenhuma nota para limpar.', 'info');
+        return;
+      }
+      if (!confirm('⚠️ Tem certeza que deseja remover TODAS as notas cadastradas?')) {
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await deleteAllGrades();
+        await loadGrades();
+        showToast('🗑️ Todas as notas foram removidas.', 'success');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+    saveBtn.addEventListener('click', handleSaveGrade);
+
+    gradeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveGrade();
+      }
+    });
+
+    studentSelect.addEventListener('change', renderUI);
+
+    clearBtn.addEventListener('click', handleClearAll);
+
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    loadGrades();
+
+    // Atualizar a cada 30 segundos (opcional, para sincronizar com outros usuários)
+    setInterval(loadGrades, 30000);
+
+    // Expor para debugging
+    window.__grades = grades;
+  })();
+</script>
+
+</body>
+</html>
